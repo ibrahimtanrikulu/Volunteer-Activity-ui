@@ -8,13 +8,15 @@ import MyEventsPage from "./pages/MyEventsPage";
 import CreateEventPage from "./pages/CreateEventPage";
 import EditEventPage from "./pages/EditEventPage";
 import ProfilePage from "./pages/ProfilePage";
+import ErrorPage from "./pages/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <LoginPage /> },   
+      { index: true, element: <EventsPage /> },   
       { path: "login", element: <LoginPage /> }, 
       { path: "register", element: <RegisterPage /> },
       { path: "events", element: <EventsPage /> },
