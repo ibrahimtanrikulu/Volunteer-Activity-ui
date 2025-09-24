@@ -4,10 +4,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Password from "../components/Form/Password";
 import Text from "../components/Form/Text";
-
+import { Register } from "../services/auth";
 const schema = z
   .object({
     role: z.string().min(1, "Rol seçimi zorunlu"),
+    username: z.string().min(3, "Kullanıcı adı en az 3 karakter"),
     first_name: z.string().min(2, "İsim en az 2 karakter"),
     last_name: z.string().min(2, "Soyisim en az 2 karakter"),
     email: z.string().email("Geçerli bir e-posta girin"),
@@ -30,12 +31,19 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { role: "volunteer" } });
 
-  const onSubmit = async (values: FormValues) => {
-    // TODO: Burada API'ye bağlanacağız (register)
-    // await registerApi(values);
-    console.log("Register form values:", values);
-    nav("/login"); // şimdilik login'e yönlendir
-  };
+  const onSubmit = async (values: FormValues) => {   
+    const { user } = await Register({
+      username: values.username,
+      email: values.email,
+      password: values.password,
+      role: values.role,
+      first_name: values.first_name,
+      last_name: values.last_name,
+    });
+    console.log(user);
+    
+    nav("/login");
+    };
 
   return (
     <div className="mx-auto max-w-md py-10">
@@ -94,6 +102,13 @@ export default function RegisterPage() {
             {...register("last_name")}
           />
         </div>
+
+        <Text
+          label="Kullanıcı Adı"
+          placeholder="ornek_kullanici"
+          error={errors.username?.message}
+          {...register("username")}
+        />
 
         <Text
           label="E-posta"
